@@ -14,7 +14,7 @@ public class RemoveAllServicesExample {
      * используемых при удалении всех сервисов/услуг.
      */
     public RemoveAllServicesExample(Page page) {
-        this.navArrowDown = page.locator(".a-icon.a-icon-small-remove");
+        this.navArrowDown = page.locator("button[data-action=\"a-stepper-decrement\"]\n");
         this.delete = page.locator("input[data-action='delete-active']");
         this.deleteApprove = page.locator("your-confirm-delete-button-selector");
     }
@@ -29,12 +29,12 @@ public class RemoveAllServicesExample {
         if (navArrowDown.first().isVisible()) {
             navArrowDown.first().click();
 
-            while (delete.count() > 0) {
-                delete.first().hover();
-                delete.first().click();
+            while (navArrowDown.count() > 0) {
+                navArrowDown.first().hover();
+                navArrowDown.first().click();
 //                deleteApprove.click();
 
-                page.waitForSelector("your-nav-arrow-down-selector",
+                page.waitForSelector(navArrowDown.toString(),
                         new Page.WaitForSelectorOptions().setState(WaitForSelectorState.HIDDEN));
             }
         } else if (navArrowDown.first().isHidden()) {

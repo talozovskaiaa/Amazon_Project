@@ -3,27 +3,32 @@ package ru.netology.amazon.test;
 import com.microsoft.playwright.BrowserContext;
 import com.microsoft.playwright.Page;
 import io.github.cdimascio.dotenv.Dotenv;
+import io.qameta.allure.Severity;
+import io.qameta.allure.SeverityLevel;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.parallel.ResourceLock;
 import org.junit.jupiter.api.parallel.Resources;
 import ru.netology.amazon.page.HomePage;
 import ru.netology.amazon.page.MainPage;
+import ru.netology.amazon.page.RemoveAllServicesExample;
 import ru.netology.amazon.page.ShoppingCartPage;
-import io.qameta.allure.*;
-import ru.netology.amazon.utils.ThreadManager;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-public class RemovingTests {
+import static ru.netology.amazon.page.ShoppingCartPage.*;
+
+public class RemovalAfterTest {
+
     private static MainPage mainPage;
     private HomePage homePage;
-    private RemovingTests removingTests;
     private ShoppingCartPage shoppingCartPage;
+    private RemoveAllServicesExample removeAllServicesExample;
+    private Page page;
 
-    private static Dotenv dotenv = Dotenv.load();
-    private static String login = dotenv.get("USER_EMAIL");
-    private static String password = dotenv.get("USER_PASSWORD");
+    private static final Dotenv dotenv = Dotenv.load();
+    private static final String login = dotenv.get("USER_EMAIL");
+    private static final String password = dotenv.get("USER_PASSWORD");
     private static final Path AUTH_FILE_PATH = Paths.get("auth.json");
 
     @BeforeAll
@@ -35,23 +40,21 @@ public class RemovingTests {
         homePage.loginWithValidUser(login, password);
 
         page.context().storageState(new BrowserContext.StorageStateOptions().setPath(AUTH_FILE_PATH));
-        mainPage.tearDown();
     }
 
     @BeforeEach
     @ResourceLock(Resources.SYSTEM_PROPERTIES)
     public void setup() {
-        Page page = mainPage.setUPWithStorageState("auth.json");
+        page = mainPage.setUPWithStorageState("auth.json");
         homePage = new HomePage(page);
-        removingTests = new RemovingTests();
         shoppingCartPage = new ShoppingCartPage(page);
-        shoppingCartPage.searchItem("airpods");
-        shoppingCartPage.addToCart("a-autoid-1");
     }
 
     @AfterEach
-    public void tearDown() {
-        mainPage.tearDown();
+    public void tearDown() throws InterruptedException {
+        removeAllServicesExample = new RemoveAllServicesExample(page);
+        removeAllServicesExample.removeAll();
+            mainPage.tearDown();
     }
 
     @AfterAll
@@ -64,10 +67,12 @@ public class RemovingTests {
     }
 
     @Test
-    @DisplayName("Removing an item from the cart")
+    @DisplayName("Поиск 'Puppets' и добавление в корзину")
     @Severity(SeverityLevel.BLOCKER)
-    void removingAnItemFromTheCart() {
-        ThreadManager.runAmazonTests();
-        shoppingCartPage.deleteAnItemsFromTheCart("input[data-action=\"delete-active\"][type=\"submit\"]", "sc-list-item-removed-msg-text-delete-5e80513f-c676-4c8a-bc75-17b8d0bc6804");
+    void searchWithSearchField(){
+        shoppingCartPage.searchItem("Puppets");
+        shoppingCartPage.addToCart(
+                ADD_TO_CART_BUTTON_FOR_PUPPETS
+        );
     }
 }

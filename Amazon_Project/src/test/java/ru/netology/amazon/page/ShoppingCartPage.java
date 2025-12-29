@@ -16,6 +16,7 @@ public class ShoppingCartPage {
     public static final String SEARCH_FIELD = "#twotabsearchtextbox";
     public static final String SEARCH_BUTTON ="#nav-search-submit-button";
     public static final String ADD_TO_CART_BUTTON_FOR_MACBOOK = "#a-autoid-4-announce";
+    public static final String ADD_TO_CART_BUTTON_FOR_PUPPETS = "#a-autoid-3-announce";
     public static final String INCREASE_THE_NUMBER = "button[aria-label=\"Increase quantity by one\"]";
     public static final String CONFIRMATION_OF_ITEM_ADDITION = "div.a-stepper-inner-container";
     public static final String SHOPPING_CART = "#sc-active-items-header";
@@ -29,6 +30,7 @@ public class ShoppingCartPage {
     public final static String ADDRESS_FIELD = "#address-ui-widgets-enterAddressLine1";
     public final static String SUITE_NUMBER = "#address-ui-widgets-enterAddressLine2";
     public final static String USE_THIS_ADDRESS_BUTTON = "#checkout-primary-continue-button-id input";
+    public Object deleteAnItemsFromTheCart;
 
     public ShoppingCartPage(Page page) {
         this.page = page;
